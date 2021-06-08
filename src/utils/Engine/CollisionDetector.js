@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 
 class CollisionDetector {
   constructor() {
@@ -13,10 +14,12 @@ class CollisionDetector {
   connectSource$(positionRetrievingCb) {
     return this.detectorsInputObservable$.pipe(
       map((position) => {
-        const objectAtPos = positionRetrievingCb(position);
-        return { position, objectAtPos };
+        const objectAtPos =
+          position == null ? null : positionRetrievingCb(position);
+        return { id: uuidv4(), position, objectAtPos };
       }),
       filter(({ objectAtPos }) => objectAtPos != null),
+      startWith({ id: uuidv4(), change: false }),
     );
   }
 }

@@ -7,17 +7,10 @@ class Vehicle extends GameBlock {
     this.type = 'moving';
     this.state.vector = null;
     this.detector = new CollisionDetecor();
-    this.detectorSubscription$ = null;
   }
 
-  startCollisionUpdates(positionRetrivingCb, observer) {
-    this.detectorSubscription$ = this.detector
-      .connectSource$(positionRetrivingCb)
-      .subscribe(observer);
-  }
-
-  endCollisionUpdates() {
-    this.detectorSubscription$.unsubscribe();
+  startCollisionUpdates$(positionRetrivingCb) {
+    return this.detector.connectSource$(positionRetrivingCb);
   }
 
   updateState(properties) {
