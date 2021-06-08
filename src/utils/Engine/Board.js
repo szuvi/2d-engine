@@ -6,6 +6,8 @@ class Board {
     this.fields = fields;
     this.size = { rows: this.fields.length, columns: this.fields[0].length };
     this.subscriber = null;
+
+    this.getFieldAtPos = this.getFieldAtPos.bind(this);
   }
 
   getState() {
@@ -18,6 +20,16 @@ class Board {
     });
   }
 
+  getActiveObject() {
+    let active = null;
+    this.forEachField((field) => {
+      if (field != null && field.type === 'moving') {
+        active = field;
+      }
+    });
+    return active;
+  }
+
   updateAtBatch(arrayOfActions) {
     arrayOfActions.forEach((action) => this.triggerAction(action));
     this.pushUpdate();
@@ -26,11 +38,11 @@ class Board {
   triggerAction({ type, payload }) {
     switch (type) {
       case 'place': {
-        this._place(payload);
+        this._place(payload.object, payload.position);
         break;
       }
       case 'destroy': {
-        this._destroy(payload);
+        this._destroy(payload.position);
         break;
       }
       default:
@@ -62,6 +74,10 @@ class Board {
     if (!this.isInBounds(pos)) {
       throw new Error(`Position ${pos} is out of bounds!`);
     }
+  }
+
+  isOccupied([x, y]) {
+    return this.fields[x][y] === null;
   }
 
   isInBounds([x, y]) {
