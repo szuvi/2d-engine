@@ -2,11 +2,17 @@ import GameBlock from './GameBlock';
 import { getRandom } from '../directionVectors';
 
 class Teleport extends GameBlock {
+  constructor() {
+    super();
+    this.type = 'teleport';
+  }
+
   use() {
+    this.type = 'static'; // single use teleport
     const randomVectorModifier = getRandom();
     return {
-      position: randomVectorModifier(this.position),
       vector: randomVectorModifier,
+      position: randomVectorModifier(this.position),
     };
   }
 }
