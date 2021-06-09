@@ -1,6 +1,10 @@
 import { interval } from 'rxjs';
-import { map, withLatestFrom, scan, tap } from 'rxjs/operators';
-import { bounceVectors, rebounceVectors } from './directionVectors';
+import { map, withLatestFrom, scan } from 'rxjs/operators';
+import {
+  bounceVectors,
+  rebounceVectors,
+  calculateNeighbourPosition,
+} from './directionVectors';
 
 class BoardUpdater {
   constructor(board) {
@@ -16,9 +20,8 @@ class BoardUpdater {
       .pipe(
         withLatestFrom(this.activateDetector$()),
         map(([, detectorsData]) => detectorsData), // get only detector data, ignore interval
-        scan(BoardUpdater.interpretDetectorUpdate),
+        scan(BoardUpdater.interpretDetectorUpdate, { id: null }),
         map(this.getVehiclesNextState),
-        tap((data) => console.warn(data)),
       )
       // newVehicleState : { position, vector }
       .subscribe((newVehicleState) => {
@@ -39,7 +42,10 @@ class BoardUpdater {
 
   getVehiclesNextState(detectorsData) {
     // detectorsData : { id, change, payload:{ position, objectAtPos} }
-    if (detectorsData.change) {
+    if (
+      detectorsData.change &&
+      detectorsData.payload.objectAtPos.type !== 'empty'
+    ) {
       return this.getStateAfterCollision(detectorsData.payload);
     }
     return this.getStateNoCollision();
@@ -49,7 +55,7 @@ class BoardUpdater {
     // collisionData: { position, objectAtPos}
     switch (collisionData.objectAtPos.type) {
       case 'static': {
-        return this.getStaticCollisionData(collisionData.position);
+        return this.getStaticCollisionData();
       }
       case 'teleport': {
         return this.getTeleportCollisionData(collisionData.position);
@@ -59,42 +65,48 @@ class BoardUpdater {
     }
   }
 
-  getStaticCollisionData(collidingObjectPosition) {
+  getStaticCollisionData() {
     const vehicleVector = this.activeObject.state.vector;
     const possibleBounceVectors = bounceVectors
       .get(vehicleVector)
       .sort(() => Math.random() - 0.5); // randomize array
 
-    const futureState = this.getFutureState(
-      collidingObjectPosition,
-      possibleBounceVectors,
-    );
+    const futureState = this.getFutureCollisionState(possibleBounceVectors);
 
     return futureState;
   }
 
-  getFutureState(collidingObjectPosition, possibleBounceVectors) {
+  getFutureCollisionState(possibleBounceVectors) {
     let futureState;
 
     possibleBounceVectors.forEach((bounceVector) => {
-      const possiblePossiton = bounceVector(collidingObjectPosition);
-      if (!this.board.isOccupied(possiblePossiton)) {
-        futureState = { vector: bounceVector, position: possiblePossiton };
+      const neighbourPosition = calculateNeighbourPosition(
+        this.activeObject.state.position,
+        this.activeObject.state.vector,
+        bounceVector,
+      );
+      if (!this.board.isOccupied(neighbourPosition)) {
+        futureState = {
+          vector: bounceVector,
+          position: this.activeObject.state.position,
+        };
       }
     });
 
+    // rebounce case (opposite vector)
     if (futureState == null) {
       futureState = {
         vector: rebounceVectors.get(this.activeObject.state.vector),
         position: this.activeObject.state.position,
       };
     }
+
     return futureState;
   }
 
   getTeleportCollisionData(teleportsPosition) {
     const currTeleport = this.board.getFieldAtPos(teleportsPosition);
-    const newState = currTeleport.use();
+    const newState = currTeleport.use(this.board.isOccupied);
     return newState;
   }
 
