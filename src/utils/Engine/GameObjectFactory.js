@@ -2,6 +2,7 @@
 import GameBlock from './GameObjects/GameBlock';
 import Vehicle from './GameObjects/Vehicle';
 import Teleport from './GameObjects/Teleport';
+import EmptyBlock from './GameObjects/EmptyBlock';
 
 const GameObjectFactory = (function FactoryIIFE() {
   return {
@@ -13,8 +14,8 @@ const GameObjectFactory = (function FactoryIIFE() {
           return new Vehicle(initialPos);
         case 'teleport':
           return new Teleport(initialPos);
-        case null:
-          return null;
+        case 'empty':
+          return new EmptyBlock(initialPos);
         default:
           throw new Error('Incorrect object type');
       }
