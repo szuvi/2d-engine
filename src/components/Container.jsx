@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
+  max-width: 700px;
+  margin: 0 auto;
   ${(props) => props.fullscreen && 'height: 100vh; width: 100vw;'}
   ${(props) => props.centered && 'margin: 0 auto'};
   display: grid;

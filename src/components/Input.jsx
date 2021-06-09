@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-const Input = styled.input`
+const Input = styled.textarea`
+  height: 400px;
+  width: 100%;
   font-size: 1rem;
   padding: 0.3rem 0.5rem;
   border: 1px solid ${(props) => props.theme.mainLight};
