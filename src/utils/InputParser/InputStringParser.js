@@ -10,18 +10,6 @@ const InputStringParser = (function InputStringParserIIFE() {
       .map((row) => row.replace(/[[\]]/g, '').split(',')); // removes all [] and splits on ,
   }
 
-  // function isMatrixOfStrings(input) {
-  //   return (
-  //     Array.isArray(input) && input.every((entry) => isArrayOfStrings(entry))
-  //   );
-  // }
-
-  // function isArrayOfStrings(input) {
-  //   return (
-  //     Array.isArray(input) && input.every((entry) => typeof entry === 'string')
-  //   );
-  // }
-
   return {
     parse,
   };
