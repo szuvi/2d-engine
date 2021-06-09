@@ -12,12 +12,19 @@ const bounceVectors = new Map([
   [vectors.downRight, [vectors.upRight, vectors.downLeft]],
 ]);
 
-const rebounceVectors = new Map(
+const rebounceVectors = new Map([
   [vectors.upLeft, vectors.downRight],
   [vectors.upRight, vectors.downLeft],
   [vectors.downLeft, vectors.upRight],
   [vectors.downRight, vectors.upLeft],
-);
+]);
+
+function calculateNeighbourPosition(vehiclePosition, vector, bounceVector) {
+  const [a, b] = vector(vehiclePosition);
+  const [c, d] = bounceVector(vehiclePosition);
+  const neighbourPos = [(a + c) / 2, (b + d) / 2];
+  return neighbourPos;
+}
 
 function getRandom() {
   const modifiers = Object.values(vectors);
@@ -26,4 +33,9 @@ function getRandom() {
 }
 
 export default vectors;
-export { getRandom, bounceVectors, rebounceVectors };
+export {
+  getRandom,
+  bounceVectors,
+  rebounceVectors,
+  calculateNeighbourPosition,
+};
