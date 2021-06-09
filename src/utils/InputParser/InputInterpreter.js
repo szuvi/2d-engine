@@ -2,15 +2,12 @@
 const dictionary = {
   X: 'block',
   1: 'vehicle',
-  0: null,
+  0: 'empty',
   Y: 'teleport',
 };
 
 const InputInterpreter = (function InputInterpreterIIFE() {
   function interpret(input) {
-    if (!isValid(input)) {
-      throw new Error('Incorrect input for Interpreter');
-    }
     const boardSize = getBoardSize(input);
     const fieldsInstructions = getFieldInstructions(input);
     return {
@@ -39,17 +36,6 @@ const InputInterpreter = (function InputInterpreterIIFE() {
     const blockType = dictionary[field];
     const position = [x, y];
     return { type: blockType, pos: position };
-  }
-
-  function isValid(input) {
-    // TODO could use some improvement
-    return (
-      Array.isArray(input) &&
-      input.every(
-        (row) =>
-          Array.isArray(row) && row.every((entry) => typeof entry === 'string'),
-      )
-    );
   }
 
   return {

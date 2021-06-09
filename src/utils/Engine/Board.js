@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Observable } from 'rxjs';
+import EmptyBlock from './GameObjects/EmptyBlock';
 
 class Board {
   constructor(fields) {
@@ -8,6 +9,8 @@ class Board {
     this.subscriber = null;
 
     this.getFieldAtPos = this.getFieldAtPos.bind(this);
+    this.isOccupied = this.isOccupied.bind(this);
+    this.getActiveObject = this.getActiveObject.bind(this);
   }
 
   getState() {
@@ -23,7 +26,7 @@ class Board {
   getActiveObject() {
     let active = null;
     this.forEachField((field) => {
-      if (field != null && field.type === 'moving') {
+      if (field.type === 'moving') {
         active = field;
       }
     });
@@ -57,7 +60,7 @@ class Board {
 
   _destroy([x, y]) {
     this.triggerBoundError([x, y]);
-    this.fields[x][y] = null;
+    this.fields[x][y] = new EmptyBlock([x, y]);
   }
 
   placeAtPos(object, [x, y]) {
@@ -77,7 +80,7 @@ class Board {
   }
 
   isOccupied([x, y]) {
-    return this.fields[x][y] === null;
+    return this.fields[x][y].type !== 'empty';
   }
 
   isInBounds([x, y]) {
@@ -105,12 +108,6 @@ class Board {
   forEachField(callback) {
     this.fields.forEach((row) => row.forEach((field) => callback(field)));
   }
-
-  // getFieldNeighbours([x, y]) {
-  //   return Object.values(positionModifiers)
-  //     .map((modifier) => this.getCellAtPos(modifier([x, y])))
-  //     .filter((cell) => cell != null);
-  // }
 }
 
 export default Board;
