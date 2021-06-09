@@ -10,7 +10,11 @@ class Vehicle extends GameBlock {
   }
 
   startCollisionUpdates$(positionRetrivingCb) {
-    return this.detector.connectSource$(positionRetrivingCb);
+    return this.detector.connectSource$(
+      positionRetrivingCb,
+      this.state.vector,
+      this.state.position,
+    );
   }
 
   updateState(properties) {
@@ -23,7 +27,6 @@ class Vehicle extends GameBlock {
 
   setVector(vector) {
     this.state.vector = vector;
-    this.updateDetector();
   }
 
   updateDetector() {
