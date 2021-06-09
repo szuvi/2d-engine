@@ -5,7 +5,7 @@ const Teleport = styled(Base)`
   background: ${(props) => props.theme.accent};
 `;
 
-Base.defaultProps = {
+Teleport.defaultProps = {
   theme: {
     accent: 'blue',
   },

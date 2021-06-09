@@ -5,9 +5,9 @@ const Static = styled(Base)`
   background: ${(props) => props.theme.main};
 `;
 
-Base.defaultProps = {
+Static.defaultProps = {
   theme: {
-    main: '#000',
+    main: 'black',
   },
 };
 
