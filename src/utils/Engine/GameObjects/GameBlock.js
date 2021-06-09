@@ -9,10 +9,6 @@ class GameBlock {
     this.id = uuidv4();
   }
 
-  destroy() {
-    this.state = null;
-  }
-
   setPosition(newPosition) {
     this.state.position = newPosition;
   }
