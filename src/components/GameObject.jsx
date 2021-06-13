@@ -20,4 +20,11 @@ function GameObject(props) {
   }
 }
 
-export default GameObject;
+function MemoizedGameObject({ objectType, disabled }) {
+  return React.useMemo(
+    () => <GameObject objectType={objectType} disabled={disabled} />,
+    [objectType, disabled],
+  );
+}
+
+export default MemoizedGameObject;

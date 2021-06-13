@@ -23,18 +23,18 @@ function SimpleMain() {
     return () => {
       subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [game]);
 
-  const handleStart = () => {
+  const handleStart = React.useCallback(() => {
     setStarted(true);
-    game.startUpdates(1000);
-  };
+    game.startUpdates(200);
+  }, [game]);
 
-  const handleStop = () => {
+  const handleStop = React.useCallback(() => {
     setStarted(false);
     game.endUpdates();
-  };
+  }, [game]);
+
   return (
     <Container fullscreen centered>
       <BoardGrid size={size}>

@@ -17,18 +17,22 @@ function useGame(fieldsData) {
   );
   const myUpdater = React.useMemo(() => new BoardUpdater(myBoard), [myBoard]);
 
-  return {
-    getSize: () => myBoard.size,
-    getState: () => myBoard.getState(),
-    getBoardUpdates$: () => {
-      myUpdater.activeObject.state.vector = vectors.downRight;
-      return myBoard.getBoardUpdates$();
-    },
-    startUpdates: () => myUpdater.start(200),
-    endUpdates: () => myUpdater.stop(),
-    changeVector: (direction) =>
-      changeVector(direction, myBoard.getActiveObject()),
-  };
+  const API = React.useMemo(
+    () => ({
+      getSize: () => myBoard.size,
+      getState: () => myBoard.getState(),
+      getBoardUpdates$: () => {
+        myUpdater.activeObject.state.vector = vectors.downRight;
+        return myBoard.getBoardUpdates$();
+      },
+      startUpdates: (interval) => myUpdater.start(interval),
+      endUpdates: () => myUpdater.stop(),
+      changeVector: (direction) =>
+        changeVector(direction, myBoard.getActiveObject()),
+    }),
+    [myBoard, myUpdater],
+  );
+  return API;
 }
 
 export default useGame;

@@ -8,31 +8,42 @@ function Controls({ started, handleStart, handleStop, handleDirectionChange }) {
     handleDirectionChange(e.target.name);
   };
 
-  return (
-    <Row>
-      <ClearButton onClick={handleStart} disabled={started}>
-        Start
-      </ClearButton>
-      <ClearButton onClick={handleStop} disabled={!started}>
-        Stop
-      </ClearButton>
-      <ClearButton onClick={changeDirection} disabled={started} name="upLeft">
-        ↖️
-      </ClearButton>
-      <ClearButton onClick={changeDirection} disabled={started} name="upRight">
-        ↗️
-      </ClearButton>
-      <ClearButton onClick={changeDirection} disabled={started} name="downLeft">
-        ↙️
-      </ClearButton>
-      <ClearButton
-        onClick={changeDirection}
-        disabled={started}
-        name="downRight"
-      >
-        ↘️
-      </ClearButton>
-    </Row>
+  return React.useMemo(
+    () => (
+      <Row>
+        <ClearButton onClick={handleStart} disabled={started}>
+          Start
+        </ClearButton>
+        <ClearButton onClick={handleStop} disabled={!started}>
+          Stop
+        </ClearButton>
+        <ClearButton onClick={changeDirection} disabled={started} name="upLeft">
+          ↖️
+        </ClearButton>
+        <ClearButton
+          onClick={changeDirection}
+          disabled={started}
+          name="upRight"
+        >
+          ↗️
+        </ClearButton>
+        <ClearButton
+          onClick={changeDirection}
+          disabled={started}
+          name="downLeft"
+        >
+          ↙️
+        </ClearButton>
+        <ClearButton
+          onClick={changeDirection}
+          disabled={started}
+          name="downRight"
+        >
+          ↘️
+        </ClearButton>
+      </Row>
+    ),
+    [started, handleStart, handleStop, handleDirectionChange],
   );
 }
 
